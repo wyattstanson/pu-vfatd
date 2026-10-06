@@ -1,0 +1,227 @@
+[
+ {
+  "n": 1,
+  "key": "prior",
+  "latex": "\\bar{C}_{s}^{t}=\\frac{C_{0}}{\\sum_{k\\in K}p_{s,k}^{t-1}\\,\\kappa_{k}}"
+ },
+ {
+  "n": 2,
+  "key": "meas",
+  "latex": "\\tilde{C}_{s}^{t}=\\frac{\\psi^{\\max}\\,y_{s}^{t-1}}{n_{s}^{t-1}\\,\\psi_{s}^{t-1}}"
+ },
+ {
+  "n": 3,
+  "key": "cap",
+  "latex": "\\hat{C}_{s}^{t}=\\begin{cases}\\beta\\,\\hat{C}_{s}^{t-1}+\\left(1-\\beta\\right)\\tilde{C}_{s}^{t}, & \\text{if }n_{s}^{t-1}>0\\text{ and }\\psi_{s}^{t-1}\\ge\\psi^{\\min}\\\\ \\bar{C}_{s}^{t}, & \\text{otherwise}\\end{cases}"
+ },
+ {
+  "n": 4,
+  "key": "fc",
+  "latex": "\\left(\\mu_{i,k}^{t},\\ \\sigma_{i,k}^{t}\\right)=f_{\\mathbf{w}}\\left(\\mathbf{X}_{i}^{t-1}\\right),\\quad\\forall k\\in K"
+ },
+ {
+  "n": 5,
+  "key": "nll",
+  "latex": "\\mathcal{L}_{F}\\left(\\mathbf{w}\\right)=\\frac{1}{M}\\sum_{m=1}^{M}\\left[\\ln\\sigma_{m}+\\frac{\\left(d_{m}-\\mu_{m}\\right)^{2}}{2\\sigma_{m}^{2}}\\right]"
+ },
+ {
+  "n": 6,
+  "key": "resid",
+  "latex": "e_{i,k}^{t-1}=\\frac{d_{i,k}^{t-1}-\\mu_{i,k}^{t-1}}{\\sigma_{i,k}^{t-1}}"
+ },
+ {
+  "n": 7,
+  "key": "qupd",
+  "latex": "q_{i}^{t}=q_{i}^{t-1}+\\eta_{q}\\left(\\frac{1}{\\left|K\\right|}\\sum_{k\\in K}\\mathbb{1}\\left[d_{i,k}^{t-1}>\\hat{D}_{i,k}^{t-1}\\right]-\\alpha\\right)"
+ },
+ {
+  "n": 8,
+  "key": "plan",
+  "latex": "\\hat{D}_{i,k}^{t}=\\max\\left(\\mu_{i,k}^{t}+\\max\\left(q_{i}^{t},0\\right)\\sigma_{i,k}^{t},\\ d_{i,k}^{t-1}\\right)"
+ },
+ {
+  "n": 9,
+  "key": "obj",
+  "latex": "\\underset{\\mathbf{n}^{t},\\mathbf{x}^{t}}{\\min}\\ J^{t}=J_{\\mathrm{dep}}^{t}+J_{\\mathrm{tr}}^{t}+J_{\\mathrm{loss}}^{t}+J_{\\mathrm{lat}}^{t}+J_{\\mathrm{rec}}^{t}"
+ },
+ {
+  "n": 10,
+  "key": "jdep",
+  "latex": "J_{\\mathrm{dep}}^{t}=\\sum_{s\\in S}c_{s}^{\\mathrm{dep}}\\,n_{s}^{t}"
+ },
+ {
+  "n": 11,
+  "key": "jtr",
+  "latex": "J_{\\mathrm{tr}}^{t}=\\sum_{i\\in I}\\sum_{k\\in K}\\sum_{s\\in S}c_{i,s}^{\\mathrm{tr}}\\,\\hat{D}_{i,k}^{t}\\,x_{i,k,s}^{t}"
+ },
+ {
+  "n": 12,
+  "key": "jloss",
+  "latex": "J_{\\mathrm{loss}}^{t}=c^{\\mathrm{loss}}\\sum_{i\\in I}\\sum_{k\\in K}\\hat{D}_{i,k}^{t}\\left(1-\\sum_{s\\in S}x_{i,k,s}^{t}\\right)"
+ },
+ {
+  "n": 13,
+  "key": "jlat",
+  "latex": "J_{\\mathrm{lat}}^{t}=c^{\\mathrm{lat}}\\sum_{i\\in I}\\sum_{k\\in K}\\sum_{s\\in S}\\hat{D}_{i,k}^{t}\\,x_{i,k,s}^{t}\\left(\\ell_{i,s}^{t}+h_{s}^{t}\\right)"
+ },
+ {
+  "n": 14,
+  "key": "jrec",
+  "latex": "J_{\\mathrm{rec}}^{t}=\\sum_{s\\in S}\\left[c_{s}^{\\mathrm{on}}\\left(n_{s}^{t}-n_{s}^{t-1}\\right)^{+}+c_{s}^{\\mathrm{off}}\\left(n_{s}^{t-1}-n_{s}^{t}\\right)^{+}\\right]+J_{\\mathrm{mig}}^{t}"
+ },
+ {
+  "n": 15,
+  "key": "jmig",
+  "latex": "J_{\\mathrm{mig}}^{t}=\\frac{c^{\\mathrm{mig}}}{2}\\sum_{i\\in I}\\sum_{k\\in K}\\sum_{s\\in S}\\hat{D}_{i,k}^{t}\\left|x_{i,k,s}^{t}-x_{i,k,s}^{t-1}\\right|"
+ },
+ {
+  "n": 16,
+  "key": "con",
+  "latex": "c_{s}^{\\mathrm{on}}=c_{s}^{\\mathrm{dep}}\\,\\frac{T_{s}^{\\mathrm{on}}+T_{s}^{\\mathrm{sync}}}{\\tau}"
+ },
+ {
+  "n": 17,
+  "key": "c_res",
+  "latex": "n_{s}^{t}\\in\\left\\{0,1,\\dots,N_{s}^{\\max,t}\\right\\},\\quad N_{s}^{\\max,t}=\\left\\lfloor\\min\\left(\\frac{F_{s}^{\\mathrm{cpu},t}}{\\zeta^{\\mathrm{cpu}}},\\frac{F_{s}^{\\mathrm{mem},t}}{\\zeta^{\\mathrm{mem}}}\\right)\\right\\rfloor"
+ },
+ {
+  "n": 18,
+  "key": "c_cap",
+  "latex": "\\sum_{i\\in I}\\sum_{k\\in K}\\hat{D}_{i,k}^{t}\\,x_{i,k,s}^{t}\\le\\rho^{\\mathrm{fw}}\\,\\hat{C}_{s}^{t}\\,n_{s}^{t},\\quad\\forall s\\in S"
+ },
+ {
+  "n": 19,
+  "key": "c_link",
+  "latex": "b_{l}^{t-1}+\\sum_{i\\in I}\\sum_{s\\in S}\\chi_{l}^{i,s}\\sum_{k\\in K}\\hat{D}_{i,k}^{t}\\,x_{i,k,s}^{t}\\le\\rho^{\\mathrm{link}}B_{l},\\quad\\forall l\\in L"
+ },
+ {
+  "n": 20,
+  "key": "c_lat",
+  "latex": "x_{i,k,s}^{t}=0,\\quad\\forall\\left(i,k,s\\right):\\ \\ell_{i,s}^{t}+h_{s}^{t}>T_{k}^{\\max}"
+ },
+ {
+  "n": 21,
+  "key": "c_asg",
+  "latex": "\\sum_{s\\in S}x_{i,k,s}^{t}=1\\ \\ \\forall i\\in I,\\ k\\in K_{p};\\qquad\\sum_{s\\in S}x_{i,k,s}^{t}\\le1\\ \\ \\forall i\\in I,\\ k\\in K\\setminus K_{p}"
+ },
+ {
+  "n": 22,
+  "key": "c_cov",
+  "latex": "\\sum_{i\\in I}\\sum_{k\\in K}\\sum_{s\\in S}\\hat{D}_{i,k}^{t}x_{i,k,s}^{t}\\ge\\Gamma\\sum_{i\\in I}\\sum_{k\\in K}\\hat{D}_{i,k}^{t},\\quad\\sum_{s\\in S}n_{s}^{t}\\le N^{\\mathrm{lic}},\\quad0\\le x_{i,k,s}^{t}\\le1"
+ },
+ {
+  "n": 23,
+  "key": "state",
+  "latex": "\\mathbf{s}^{t}=\\left(\\mathbf{d}^{t-1},\\boldsymbol{\\mu}^{t},\\boldsymbol{\\sigma}^{t},\\hat{\\mathbf{D}}^{t},\\hat{\\mathbf{C}}^{t},\\mathbf{N}^{\\max,t},\\mathbf{U}^{t-1},\\boldsymbol{\\ell}^{t},\\mathbf{n}^{t-1},\\mathbf{x}^{t-1},\\boldsymbol{\\omega}^{t}\\right)"
+ },
+ {
+  "n": 24,
+  "key": "act_n",
+  "latex": "n_{s}^{t}=\\min\\left(\\max\\left(n_{s}^{t-1}+\\Delta n_{s}^{t},\\,0\\right),\\,N_{s}^{\\max,t}\\right),\\quad\\Delta n_{s}^{t}\\in\\left\\{-2,-1,0,1,2\\right\\}"
+ },
+ {
+  "n": 25,
+  "key": "act_x",
+  "latex": "x_{i,k,s}^{t}=\\frac{m_{i,k,s}^{t}\\exp\\left(z_{i,k,s}^{t}\\right)}{\\sum_{s'\\in S}m_{i,k,s'}^{t}\\exp\\left(z_{i,k,s'}^{t}\\right)},\\quad m_{i,k,s}^{t}=\\mathbb{1}\\left[\\ell_{i,s}^{t}+h_{s}^{t}\\le T_{k}^{\\max}\\right]"
+ },
+ {
+  "n": 26,
+  "key": "rew",
+  "latex": "R^{t}=-\\frac{J^{t}}{J^{\\mathrm{ref}}}-c^{\\mathrm{int}}\\,\\mathbb{1}\\left[\\mathbf{a}_{\\mathrm{exec}}^{t}\\neq\\mathbf{a}^{t}\\right]"
+ },
+ {
+  "n": 27,
+  "key": "viol",
+  "latex": "\\Omega_{j}\\left(\\mathbf{a}^{t}\\right)=\\frac{1}{\\Lambda_{j}}\\sum_{e\\in E_{j}}\\max\\left(0,\\ G_{j,e}\\left(\\mathbf{a}^{t}\\right)\\right)"
+ },
+ {
+  "n": 28,
+  "key": "cmdp_j",
+  "latex": "\\mathcal{J}_{R}\\left(\\pi_{\\theta}\\right)=\\mathbb{E}_{\\pi_{\\theta}}\\left[\\sum_{t=0}^{T}\\gamma^{t}R^{t}\\right],\\qquad\\mathcal{J}_{j}\\left(\\pi_{\\theta}\\right)=\\mathbb{E}_{\\pi_{\\theta}}\\left[\\sum_{t=0}^{T}\\gamma^{t}\\Omega_{j}\\left(\\mathbf{a}^{t}\\right)\\right]"
+ },
+ {
+  "n": 29,
+  "key": "cmdp",
+  "latex": "\\underset{\\theta}{\\max}\\ \\mathcal{J}_{R}\\left(\\pi_{\\theta}\\right)\\quad\\text{subject to}\\quad\\mathcal{J}_{j}\\left(\\pi_{\\theta}\\right)\\le\\xi_{j},\\ \\ \\forall j"
+ },
+ {
+  "n": 30,
+  "key": "lag",
+  "latex": "\\mathcal{L}\\left(\\theta,\\boldsymbol{\\nu}\\right)=\\mathcal{J}_{R}\\left(\\pi_{\\theta}\\right)-\\sum_{j}\\nu_{j}\\left(\\mathcal{J}_{j}\\left(\\pi_{\\theta}\\right)-\\xi_{j}\\right)"
+ },
+ {
+  "n": 31,
+  "key": "shaped",
+  "latex": "\\tilde{R}^{t}=R^{t}-\\sum_{j}\\nu_{j}\\,\\Omega_{j}\\left(\\mathbf{a}^{t}\\right)"
+ },
+ {
+  "n": 32,
+  "key": "gae",
+  "latex": "\\delta^{t}=\\tilde{R}^{t}+\\gamma V_{\\phi}\\left(\\mathbf{s}^{t+1}\\right)-V_{\\phi}\\left(\\mathbf{s}^{t}\\right),\\qquad\\hat{A}^{t}=\\sum_{v=0}^{T-t-1}\\left(\\gamma\\lambda\\right)^{v}\\delta^{t+v}"
+ },
+ {
+  "n": 33,
+  "key": "ratio",
+  "latex": "r^{t}\\left(\\theta\\right)=\\frac{\\pi_{\\theta}\\left(\\mathbf{a}^{t}\\mid\\mathbf{s}^{t}\\right)}{\\pi_{\\theta_{\\mathrm{old}}}\\left(\\mathbf{a}^{t}\\mid\\mathbf{s}^{t}\\right)}"
+ },
+ {
+  "n": 34,
+  "key": "clip",
+  "latex": "L^{\\mathrm{CLIP}}\\left(\\theta\\right)=\\hat{\\mathbb{E}}_{t}\\left[\\min\\left(r^{t}\\left(\\theta\\right)\\hat{A}^{t},\\ \\mathrm{clip}\\left(r^{t}\\left(\\theta\\right),1-\\epsilon,1+\\epsilon\\right)\\hat{A}^{t}\\right)\\right]"
+ },
+ {
+  "n": 35,
+  "key": "loss",
+  "latex": "L\\left(\\theta,\\phi\\right)=-L^{\\mathrm{CLIP}}\\left(\\theta\\right)+\\eta_{V}\\,\\hat{\\mathbb{E}}_{t}\\left[\\left(V_{\\phi}\\left(\\mathbf{s}^{t}\\right)-\\hat{G}^{t}\\right)^{2}\\right]-\\eta_{H}\\,\\hat{\\mathbb{E}}_{t}\\left[\\mathcal{H}\\left(\\pi_{\\theta}\\left(\\cdot\\mid\\mathbf{s}^{t}\\right)\\right)\\right]"
+ },
+ {
+  "n": 36,
+  "key": "dual",
+  "latex": "\\nu_{j}\\leftarrow\\max\\left(0,\\ \\nu_{j}+\\eta_{\\nu}\\left(\\hat{\\mathcal{J}}_{j}-\\xi_{j}\\right)\\right)"
+ },
+ {
+  "n": 37,
+  "key": "feas",
+  "latex": "\\mathbf{a}^{t}\\in\\mathcal{A}^{t}\\iff\\Omega_{j}\\left(\\mathbf{a}^{t}\\right)=0,\\quad\\forall j\\in\\left\\{\\mathrm{cap},\\mathrm{link},\\mathrm{lat},\\mathrm{cov}\\right\\}"
+ },
+ {
+  "n": 38,
+  "key": "proj",
+  "latex": "\\mathbf{a}_{\\mathrm{safe}}^{t}=\\underset{\\left(\\mathbf{n},\\mathbf{x}\\right)\\in\\mathcal{A}^{t}}{\\mathrm{arg\\ min}}\\left[\\sum_{s\\in S}\\left|n_{s}-n_{s}^{t}\\right|+\\varpi\\sum_{i\\in I}\\sum_{k\\in K}\\sum_{s\\in S}\\hat{D}_{i,k}^{t}\\left|x_{i,k,s}-x_{i,k,s}^{t}\\right|\\right]"
+ },
+ {
+  "n": 39,
+  "key": "exec",
+  "latex": "\\mathbf{a}_{\\mathrm{exec}}^{t}=\\begin{cases}\\mathbf{a}^{t}, & \\text{if }\\mathbf{a}^{t}\\in\\mathcal{A}^{t}\\\\ \\mathbf{a}_{\\mathrm{safe}}^{t}, & \\text{else if repair succeeds within }T^{\\mathrm{dec}}\\\\ \\mathbf{a}_{\\mathrm{exec}}^{t-1}, & \\text{else if }\\mathbf{a}_{\\mathrm{exec}}^{t-1}\\in\\mathcal{A}^{t}\\\\ \\mathbf{a}_{\\mathrm{vFATD}}^{t}, & \\text{otherwise}\\end{cases}"
+ },
+ {
+  "n": 40,
+  "key": "str",
+  "latex": "\\mathrm{STR}=\\frac{\\sum_{t=1}^{T}\\sum_{s\\in S}\\min\\left(Y_{s}^{t},\\ C_{s}^{t}n_{s}^{t}\\right)}{\\sum_{t=1}^{T}\\sum_{i\\in I}\\sum_{k\\in K}d_{i,k}^{t}}"
+ },
+ {
+  "n": 41,
+  "key": "opf",
+  "latex": "\\mathrm{OPF}=\\frac{\\sum_{t=1}^{T}\\sum_{s\\in S}C_{s}^{t}n_{s}^{t}}{\\sum_{t=1}^{T}\\sum_{i\\in I}\\sum_{k\\in K}d_{i,k}^{t}}"
+ },
+ {
+  "n": 42,
+  "key": "lat",
+  "latex": "\\bar{\\ell}=\\frac{\\sum_{t}\\sum_{i}\\sum_{k}\\sum_{s}d_{i,k}^{t}x_{i,k,s}^{t}\\left(\\ell_{i,s}^{t}+h_{s}^{t}\\right)}{\\sum_{t}\\sum_{i}\\sum_{k}d_{i,k}^{t}}"
+ },
+ {
+  "n": 43,
+  "key": "rcf",
+  "latex": "\\mathrm{RCF}=\\frac{1}{T}\\sum_{t=1}^{T}\\sum_{s\\in S}\\left|n_{s}^{t}-n_{s}^{t-1}\\right|"
+ },
+ {
+  "n": 44,
+  "key": "picp",
+  "latex": "\\mathrm{PICP}=\\frac{1}{T\\left|I\\right|\\left|K\\right|}\\sum_{t=1}^{T}\\sum_{i\\in I}\\sum_{k\\in K}\\mathbb{1}\\left[d_{i,k}^{t}\\le\\hat{D}_{i,k}^{t}\\right]"
+ },
+ {
+  "n": 45,
+  "key": "trec",
+  "latex": "T^{\\mathrm{rec}}=\\tau\\cdot\\min\\left\\{t-t_{f}\\ :\\ t>t_{f},\\ \\mathrm{STR}^{t}\\ge\\Gamma\\right\\}"
+ }
+]
