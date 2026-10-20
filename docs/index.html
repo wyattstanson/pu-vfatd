@@ -10,35 +10,35 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Cisco Packet Tracer aesthetic — dark charcoal, teal accent, rack-panel cards, LED indicators.
-   Every colour on :root; no dark-mode toggle needed because it IS the dark mode. */
+/* Clean white - neutral base, professional teal accent, no decorative glow.
+   Every colour on :root; light scheme throughout. */
 :root {
-  --page: #0f1419;
-  --tray: rgba(0, 188, 235, 0.04);
-  --hair: rgba(0, 188, 235, 0.12);
-  --hair-2: rgba(0, 188, 235, 0.2);
-  --core: #171e26;
-  --ws: #111820;
-  --grid: #1c252f;
-  --ink: #e8edf2;
-  --ink-2: #8c99a6;
-  --ink-3: #5c6b78;
-  --accent: #00bceb;
-  --accent-soft: rgba(0, 188, 235, 0.1);
-  --ok: #00c853;
-  --warn: #ffab00;
-  --bad: #ff3d3d;
-  --router: #1a6e8a;
-  --router-2: #2d95b6;
-  --brick: #8b3c2a;
-  --brick-2: #a85a3f;
-  --cloud: #1a2a3a;
-  --p0: #00bceb; --p1: #ffab00; --p2: #00c853; --p3: #e040a0;
+  --page: #f8f9fb;
+  --tray: rgba(14, 116, 144, 0.03);
+  --hair: #e5e7eb;
+  --hair-2: #d1d5db;
+  --core: #ffffff;
+  --ws: #f1f3f5;
+  --grid: #dfe2e6;
+  --ink: #111827;
+  --ink-2: #4b5563;
+  --ink-3: #6b7280;
+  --accent: #0e7490;
+  --accent-soft: rgba(14, 116, 144, 0.06);
+  --ok: #16a34a;
+  --warn: #d97706;
+  --bad: #dc2626;
+  --router: #0e7490;
+  --router-2: #0891b2;
+  --brick: #9a3412;
+  --brick-2: #c2410c;
+  --cloud: #e0f2fe;
+  --p0: #0891b2; --p1: #d97706; --p2: #16a34a; --p3: #a21caf;
   --font-ui: "Geist", "Segoe UI", system-ui, sans-serif;
   --font-num: "Geist Mono", "Cascadia Mono", Consolas, monospace;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --lift: 0 0 0 1px var(--hair);
-  color-scheme: dark;
+  --lift: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px var(--hair);
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -48,9 +48,9 @@ button, select, input { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .app { min-height: 100%; padding-inline: clamp(16px, 3vw, 40px); padding-block: 0 48px; }
 
-/* ---- toolbar nav (rack-mount top bar) ---- */
+/* ---- toolbar nav ---- */
 .island-wrap { display: flex; justify-content: center; position: sticky; top: 0; z-index: 20;
-  background: linear-gradient(180deg, #0c1016 0%, #111820 100%); border-bottom: 1px solid var(--hair);
+  background: #ffffff; border-bottom: 1px solid var(--hair);
   padding: 0; margin-inline: calc(-1 * clamp(16px, 3vw, 40px)); padding-inline: clamp(16px, 3vw, 40px); }
 .island { display: flex; align-items: center; gap: 1px; padding: 0; border-radius: 0; background: transparent;
   backdrop-filter: none; -webkit-backdrop-filter: none;
@@ -85,20 +85,19 @@ button, select, input { font: inherit; color: inherit; }
 .tb-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
 .tb-btn:active { transform: scale(0.96); }
 .tb-btn svg { width: 14px; height: 14px; color: var(--ink); }
-#btnPlay { width: auto; padding: 0 4px 0 12px; gap: 8px; display: inline-flex; background: var(--accent); color: #0a1018; font-weight: 600;
+#btnPlay { width: auto; padding: 0 4px 0 12px; gap: 8px; display: inline-flex; background: var(--accent); color: #ffffff; font-weight: 600;
   border-color: var(--accent); font-size: 12px; letter-spacing: 0.04em; }
-#btnPlay .ic { width: 24px; height: 24px; border-radius: 3px; background: rgba(10, 16, 24, 0.2); display: grid; place-items: center; transition: transform .4s var(--ease); }
+#btnPlay .ic { width: 24px; height: 24px; border-radius: 3px; background: rgba(255, 255, 255, 0.2); display: grid; place-items: center; transition: transform .4s var(--ease); }
 #btnPlay:hover .ic { transform: translateX(1px); }
-#btnPlay:hover { background: #00d4ff; }
-#btnPlay svg { color: #0a1018; }
+#btnPlay:hover { background: #0891b2; }
+#btnPlay svg { color: #ffffff; }
 .speed { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 4px; background: var(--core); border: 1px solid var(--hair); }
 .speed label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); font-family: var(--font-num); }
 .speed input { accent-color: var(--accent); width: 100px; }
-.clock { font-family: var(--font-num); font-size: 14px; padding: 7px 14px; border-radius: 4px; background: #0a0e14; color: var(--accent);
-  letter-spacing: 0.06em; font-variant-numeric: tabular-nums; border: 1px solid var(--hair);
-  text-shadow: 0 0 8px rgba(0, 188, 235, 0.3); }
+.clock { font-family: var(--font-num); font-size: 14px; padding: 7px 14px; border-radius: 4px; background: var(--core); color: var(--accent);
+  letter-spacing: 0.06em; font-variant-numeric: tabular-nums; border: 1px solid var(--hair); }
 
-/* ---- rack-panel cards ---- */
+/* ---- cards ---- */
 .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 10px; }
 .shell { background: transparent; border-radius: 6px; padding: 0; border: 1px solid var(--hair); min-width: 0;
   animation: rise .7s var(--ease) both; }
@@ -107,7 +106,7 @@ button, select, input { font: inherit; color: inherit; }
 .s-pal { grid-column: span 3; animation-delay: .08s; } .s-tl { grid-column: span 5; animation-delay: .1s; } .s-mode { grid-column: span 4; animation-delay: .14s; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .card-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px 8px;
-  border-bottom: 1px solid var(--hair); background: rgba(0, 188, 235, 0.02); }
+  border-bottom: 1px solid var(--hair); background: var(--tray); }
 .card-h .t { font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); font-weight: 500; font-family: var(--font-num); }
 .card-h .v { font-family: var(--font-num); font-size: 10px; color: var(--ink-3); text-align: right; }
 
@@ -115,16 +114,16 @@ button, select, input { font: inherit; color: inherit; }
   background-image: radial-gradient(circle, var(--grid) 1px, transparent 1px); background-size: 20px 20px; }
 #topo { display: block; width: 100%; height: auto; }
 .ws-badges { position: absolute; left: 10px; top: 8px; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 20px); }
-.chip { font-size: 10.5px; padding: 3px 8px; border-radius: 3px; background: rgba(17, 24, 32, 0.9); border: 1px solid var(--hair);
+.chip { font-size: 10.5px; padding: 3px 8px; border-radius: 3px; background: rgba(255, 255, 255, 0.92); border: 1px solid var(--hair);
   white-space: nowrap; font-family: var(--font-num); color: var(--ink-2); }
-.chip.warn { color: var(--warn); border-color: rgba(255, 171, 0, .3); background: rgba(255, 171, 0, .08); }
-.chip.bad { color: var(--bad); border-color: rgba(255, 61, 61, .3); background: rgba(255, 61, 61, .06); }
-.chip.ok { color: var(--ok); border-color: rgba(0, 200, 83, .25); background: rgba(0, 200, 83, .06); }
-.chip.info { color: var(--accent); border-color: rgba(0, 188, 235, .25); background: var(--accent-soft); }
-.legend { position: absolute; right: 10px; bottom: 8px; background: rgba(15, 20, 25, 0.92); border-radius: 4px; padding: 6px 10px; font-size: 10.5px;
+.chip.warn { color: var(--warn); border-color: rgba(217, 119, 6, .25); background: rgba(217, 119, 6, .06); }
+.chip.bad { color: var(--bad); border-color: rgba(220, 38, 38, .25); background: rgba(220, 38, 38, .05); }
+.chip.ok { color: var(--ok); border-color: rgba(22, 163, 74, .2); background: rgba(22, 163, 74, .05); }
+.chip.info { color: var(--accent); border-color: rgba(14, 116, 144, .2); background: var(--accent-soft); }
+.legend { position: absolute; right: 10px; bottom: 8px; background: rgba(255, 255, 255, 0.95); border-radius: 4px; padding: 6px 10px; font-size: 10.5px;
   display: grid; gap: 3px; border: 1px solid var(--hair); color: var(--ink-2); font-family: var(--font-num); }
 .legend span { display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.sw { width: 7px; height: 7px; border-radius: 50%; display: inline-block; box-shadow: 0 0 4px currentColor; }
+.sw { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
 
 .side { overflow: auto; }
 .side h2 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); font-weight: 500; margin: 0; padding: 12px 14px 6px;
@@ -142,7 +141,7 @@ button, select, input { font: inherit; color: inherit; }
 .cmp tr.sel td { background: var(--accent-soft); }
 .cmp tr.sel td:first-child { border-radius: 3px 0 0 3px; } .cmp tr.sel td:last-child { border-radius: 0 3px 3px 0; }
 .cmp tr.click { cursor: pointer; transition: background .3s var(--ease); }
-.cmp tr.click:hover td { background: rgba(0, 188, 235, 0.04); }
+.cmp tr.click:hover td { background: rgba(14, 116, 144, 0.04); }
 .inspector { padding: 4px 14px 14px; font-size: 12.5px; display: grid; gap: 5px; }
 .inspector .row { display: flex; justify-content: space-between; gap: 10px; padding-bottom: 4px; border-bottom: 1px solid var(--hair); }
 .inspector .row span:last-child { font-family: var(--font-num); font-size: 12px; color: var(--accent); }
@@ -151,7 +150,7 @@ button, select, input { font: inherit; color: inherit; }
 
 .pane { display: flex; flex-direction: column; min-width: 0; }
 .pane-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px 6px; border-bottom: 1px solid var(--hair);
-  background: rgba(0, 188, 235, 0.02); }
+  background: var(--tray); }
 .pane-h > span:first-child { font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); font-weight: 500; font-family: var(--font-num); }
 #tlInfo, #evCount { font-family: var(--font-num); font-size: 10px; color: var(--ink-3); text-align: right; }
 .palette { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 8px 10px 12px; }
@@ -159,8 +158,8 @@ button, select, input { font: inherit; color: inherit; }
   font-size: 12px; text-align: left; transition: background .3s var(--ease), border-color .3s var(--ease); }
 .pal:hover { border-color: var(--accent); background: var(--accent-soft); }
 .pal svg { width: 16px; height: 16px; flex: none; color: var(--ink-3); }
-.pal[aria-pressed="true"] { background: var(--accent); color: #0a1018; border-color: var(--accent); }
-.pal[aria-pressed="true"] svg { color: #0a1018; }
+.pal[aria-pressed="true"] { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+.pal[aria-pressed="true"] svg { color: #ffffff; }
 .timeline-wrap { padding: 8px 12px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
 #tl { width: 100%; height: 170px; display: block; cursor: crosshair; }
 .tl-legend { display: flex; gap: 12px; font-size: 10.5px; color: var(--ink-3); flex-wrap: wrap; font-family: var(--font-num); }
@@ -177,10 +176,9 @@ button, select, input { font: inherit; color: inherit; }
 .events td.time { font-family: var(--font-num); font-size: 11px; white-space: nowrap; color: var(--accent); }
 .events tr { cursor: pointer; }
 .events tr.cur td { background: var(--accent-soft); }
-.ev-sq { width: 6px; height: 6px; display: inline-block; border-radius: 50%; box-shadow: 0 0 4px currentColor; }
+.ev-sq { width: 6px; height: 6px; display: inline-block; border-radius: 50%; }
 .rt { padding: 8px 14px 14px; display: grid; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
-.rt .big { font-family: var(--font-num); font-size: 36px; letter-spacing: -0.02em; color: var(--accent); line-height: 1;
-  text-shadow: 0 0 12px rgba(0, 188, 235, 0.2); }
+.rt .big { font-family: var(--font-num); font-size: 36px; letter-spacing: -0.02em; color: var(--accent); line-height: 1; }
 .rt b { color: var(--ink); font-weight: 600; }
 
 /* ---- document views ---- */
@@ -192,10 +190,10 @@ button, select, input { font: inherit; color: inherit; }
 .tbl-wrap { overflow-x: auto; max-width: 100%; border-radius: 6px; padding: 0; border: 1px solid var(--hair); }
 .tbl { border-collapse: separate; border-spacing: 0; font-size: 12.5px; min-width: 680px; width: 100%; background: var(--core); border-radius: 5px; overflow: hidden; }
 .tbl th { text-align: left; font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); padding: 12px 10px 8px;
-  white-space: nowrap; background: rgba(0, 188, 235, 0.02); border-bottom: 1px solid var(--hair); }
+  white-space: nowrap; background: var(--tray); border-bottom: 1px solid var(--hair); }
 .tbl td { padding: 8px 10px; border-top: 1px solid var(--hair); font-variant-numeric: tabular-nums; }
 .tbl td.num { font-family: var(--font-num); font-size: 12px; text-align: right; white-space: nowrap; }
-.tbl tr.pu td { background: rgba(0, 188, 235, 0.04); }
+.tbl tr.pu td { background: rgba(14, 116, 144, 0.04); }
 .tbl td.best { color: var(--ok); font-weight: 600; }
 .eq-stage { margin-top: 10px; }
 .eq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 10px; }
@@ -208,13 +206,13 @@ button, select, input { font: inherit; color: inherit; }
 .eq-card math { font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", math; font-size: 1.05em; }
 .eq-card code { font-family: var(--font-num); font-size: 11px; color: var(--ink-3); word-break: break-word; }
 .status { font-size: 10px; padding: 2px 8px; border-radius: 3px; white-space: nowrap; letter-spacing: 0.04em; font-family: var(--font-num); text-transform: uppercase; }
-.status.implemented { color: var(--ok); background: rgba(0, 200, 83, 0.08); border: 1px solid rgba(0, 200, 83, .25); }
-.status.score { color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(0, 188, 235, .2); }
-.status.not { color: var(--ink-3); background: rgba(92, 107, 120, 0.08); border: 1px solid rgba(92, 107, 120, .2); }
-.note { border-radius: 6px; background: rgba(255, 171, 0, 0.06); padding: 14px 18px; max-width: 78ch; font-size: 13px; line-height: 1.6;
-  border: 1px solid rgba(255, 171, 0, .2); color: var(--warn); }
-.cmd { font-family: var(--font-num); font-size: 12px; background: #0a0e14; color: var(--ok); padding: 14px 18px; border-radius: 6px;
-  overflow-x: auto; white-space: pre; max-width: 78ch; border: 1px solid var(--hair); }
+.status.implemented { color: var(--ok); background: rgba(22, 163, 74, 0.06); border: 1px solid rgba(22, 163, 74, .2); }
+.status.score { color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(14, 116, 144, .15); }
+.status.not { color: var(--ink-3); background: rgba(107, 114, 128, 0.08); border: 1px solid rgba(107, 114, 128, .2); }
+.note { border-radius: 6px; background: rgba(217, 119, 6, 0.05); padding: 14px 18px; max-width: 78ch; font-size: 13px; line-height: 1.6;
+  border: 1px solid rgba(217, 119, 6, .2); color: var(--warn); }
+.cmd { font-family: var(--font-num); font-size: 12px; background: #1e293b; color: var(--ok); padding: 14px 18px; border-radius: 6px;
+  overflow-x: auto; white-space: pre; max-width: 78ch; border: 1px solid #334155; }
 
 @media (max-width: 1100px) {
   .s-topo, .s-side { grid-column: span 12; }
@@ -229,13 +227,14 @@ button, select, input { font: inherit; color: inherit; }
   .island .tag { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
 </style>
 
 <div class="app">
   <header class="island-wrap">
     <nav class="island" role="tablist" aria-label="Views">
       <span class="brand">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#00bceb" stroke-width="1.4"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M3.5 14.5h17M9 5.5V10M15 10v4.5M9 14.5v4"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#0e7490" stroke-width="1.4"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M3.5 14.5h17M9 5.5V10M15 10v4.5M9 14.5v4"/></svg>
         PU-vFATD
       </span>
       <button role="tab" id="tab-workspace" aria-selected="true" data-view="workspace">Workspace</button>
@@ -273,7 +272,7 @@ button, select, input { font: inherit; color: inherit; }
             <div class="legend" aria-label="Legend">
               <span><i class="sw" style="background:var(--p0)"></i>pop0 <i class="sw" style="background:var(--p1)"></i>pop1 <i class="sw" style="background:var(--p2)"></i>pop2 <i class="sw" style="background:var(--p3)"></i>pop3 traffic</span>
               <span><i class="sw" style="background:var(--ok)"></i>link up <i class="sw" style="background:var(--warn)"></i>above 80% <i class="sw" style="background:var(--bad)"></i>down</span>
-              <span><i class="sw" style="background:var(--ok)"></i>active vFW <i class="sw" style="background:#c9d0d6"></i>free slot</span>
+              <span><i class="sw" style="background:var(--ok)"></i>active vFW <i class="sw" style="background:#d1d5db"></i>free slot</span>
             </div>
           </div>
         </div></div>
@@ -341,7 +340,7 @@ const SCEN_ICON = {
   telemetry_delay: '<circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10 6v4l2.5 2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
   security_profile: '<path d="M10 2.5 16.5 5v5c0 3.8-2.8 6.6-6.5 7.5C6.3 16.6 3.5 13.8 3.5 10V5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7.3 10l1.9 1.9 3.6-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' };
 const EV_COLORS = { "SCALE-OUT": "#2c9a4d", "SCALE-IN": "#5f97c6", "REPAIRED": "#d99a00", "PROJECTED": "#d99a00",
-  "FALLBACK": "#ad3a68", "INFEASIBLE": "#cf3b29", "LOSS": "#cf3b29", "EVENT": "#5c6b78", "EVENT END": "#8c99a6" };
+  "FALLBACK": "#ad3a68", "INFEASIBLE": "#cf3b29", "LOSS": "#cf3b29", "EVENT": "#6b7280", "EVENT END": "#4b5563" };
 const PCOL = () => [css("--p0"), css("--p1"), css("--p2"), css("--p3")];
 
 // ----------------------------------------------------------------- state
@@ -396,20 +395,20 @@ const linkEls = [], dotEls = [], utilEls = [], localEls = [];
 function drawStatic() {
   // access links (users -> router) and local links (router -> edge site)
   for (let i = 0; i < 4; i++) {
-    el("line", { x1: POS["users" + i][0] + 18, y1: POS["users" + i][1], x2: POS["pop" + i][0] - 24, y2: POS["pop" + i][1], stroke: "#2a3a48", "stroke-width": 1.6 }, gLinks);
-    localEls.push(el("line", { x1: POS["pop" + i][0], y1: POS["pop" + i][1], x2: POS["edge" + i][0], y2: POS["edge" + i][1], stroke: "#2a3a48", "stroke-width": 2 }, gLinks));
+    el("line", { x1: POS["users" + i][0] + 18, y1: POS["users" + i][1], x2: POS["pop" + i][0] - 24, y2: POS["pop" + i][1], stroke: "#d1d5db", "stroke-width": 1.6 }, gLinks);
+    localEls.push(el("line", { x1: POS["pop" + i][0], y1: POS["pop" + i][1], x2: POS["edge" + i][0], y2: POS["edge" + i][1], stroke: "#d1d5db", "stroke-width": 2 }, gLinks));
   }
   T.links.forEach((name, l) => {
     const [a, b] = linkEnds[l]; const A = POS[a], B = POS[b];
-    const ln = el("line", { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: "#2a3a48", "stroke-width": T.B[l] >= 100 ? 2.6 : 1.8, "stroke-dasharray": T.B[l] < 100 ? "6 4" : "none" }, gLinks);
+    const ln = el("line", { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: "#d1d5db", "stroke-width": T.B[l] >= 100 ? 2.6 : 1.8, "stroke-dasharray": T.B[l] < 100 ? "6 4" : "none" }, gLinks);
     linkEls.push(ln);
     const L = Math.hypot(B[0] - A[0], B[1] - A[1]); const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L;
     const off = 34;
     dotEls.push([el("circle", { cx: A[0] + ux * off, cy: A[1] + uy * off, r: 4.2 }, gLinks), el("circle", { cx: B[0] - ux * off, cy: B[1] - uy * off, r: 4.2 }, gLinks)]);
     const mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
     const g = el("g", { transform: `translate(${mx},${my})`, cursor: "pointer" }, gLinks);
-    el("rect", { x: -22, y: -9, width: 44, height: 18, rx: 9, fill: "#171e26", stroke: "#2a3a48" }, g);
-    const tx = el("text", { x: 0, y: 4, "text-anchor": "middle", "font-family": css("--font-num"), "font-size": 10.5, fill: "#8c99a6" }, g);
+    el("rect", { x: -22, y: -9, width: 44, height: 18, rx: 9, fill: "#ffffff", stroke: "#d1d5db" }, g);
+    const tx = el("text", { x: 0, y: 4, "text-anchor": "middle", "font-family": css("--font-num"), "font-size": 10.5, fill: "#4b5563" }, g);
     g.addEventListener("click", () => select({ kind: "link", l }));
     utilEls.push({ g, tx });
   });
@@ -418,10 +417,10 @@ function drawStatic() {
     const [x, y] = POS["users" + i];
     const g = el("g", { transform: `translate(${x},${y})` }, gDev);
     for (const [dx, dy] of [[-10, -9], [6, 4]]) {
-      el("rect", { x: dx - 9, y: dy - 7, width: 18, height: 12, rx: 1.5, fill: "#dfe7ec", stroke: "#2a3a48" }, g);
-      el("rect", { x: dx - 3, y: dy + 5, width: 6, height: 3, fill: "#2a3a48" }, g);
+      el("rect", { x: dx - 9, y: dy - 7, width: 18, height: 12, rx: 1.5, fill: "#ffffff", stroke: "#d1d5db" }, g);
+      el("rect", { x: dx - 3, y: dy + 5, width: 6, height: 3, fill: "#d1d5db" }, g);
     }
-    el("text", { x: 0, y: 30, "text-anchor": "middle", "font-size": 11, fill: "#5c6b78" }, g).textContent = "users";
+    el("text", { x: 0, y: 30, "text-anchor": "middle", "font-size": 11, fill: "#6b7280" }, g).textContent = "users";
   }
   T.ingress.forEach((name, i) => {
     const [x, y] = POS[name];
@@ -430,9 +429,9 @@ function drawStatic() {
     el("rect", { x: -24, y: -5, width: 48, height: 14, fill: css("--router") }, g);
     el("ellipse", { cx: 0, cy: -5, rx: 24, ry: 9, fill: css("--router-2"), stroke: css("--router"), "stroke-width": 1.2 }, g);
     for (const [ax, ay, r] of [[0, -11, 0], [0, 1, 180], [-12, -5, 270], [12, -5, 90]])
-      el("path", { d: "M0,-3 L3,1 L1,1 L1,4 L-1,4 L-1,1 L-3,1 Z", fill: "#e8edf2", transform: `translate(${ax},${ay}) rotate(${r})` }, g);
-    el("text", { x: 0, y: 34, "text-anchor": "middle", "font-size": 12.5, "font-weight": 700, fill: "#8c99a6" }, g).textContent = name;
-    const sub = el("text", { x: 0, y: 47, "text-anchor": "middle", "font-family": css("--font-num"), "font-size": 10.5, fill: "#5c6b78" }, g);
+      el("path", { d: "M0,-3 L3,1 L1,1 L1,4 L-1,4 L-1,1 L-3,1 Z", fill: "#374151", transform: `translate(${ax},${ay}) rotate(${r})` }, g);
+    el("text", { x: 0, y: 34, "text-anchor": "middle", "font-size": 12.5, "font-weight": 700, fill: "#4b5563" }, g).textContent = name;
+    const sub = el("text", { x: 0, y: 47, "text-anchor": "middle", "font-family": css("--font-num"), "font-size": 10.5, fill: "#6b7280" }, g);
     const badge = el("g", { transform: "translate(0,-30)" }, g);
     g.addEventListener("click", () => select({ kind: "router", i }));
     g.addEventListener("keydown", (e) => { if (e.key === "Enter") select({ kind: "router", i }); });
@@ -442,9 +441,9 @@ function drawStatic() {
     const [x, y] = POS[name]; const tier = T.tiers[s];
     const g = el("g", { transform: `translate(${x},${y})`, cursor: "pointer", tabindex: 0, role: "button", "aria-label": "Firewall site " + name }, gDev);
     const w = tier === "edge" ? 40 : 54, h = tier === "edge" ? 26 : 34;
-    if (tier === "cloud") el("path", { d: "M-62,14 C-80,14 -80,-14 -58,-12 C-56,-34 -24,-38 -14,-22 C-4,-40 34,-36 34,-14 C58,-18 66,14 44,14 Z", fill: css("--cloud"), stroke: "#2a3a48", "stroke-width": 1.5 }, g);
+    if (tier === "cloud") el("path", { d: "M-62,14 C-80,14 -80,-14 -58,-12 C-56,-34 -24,-38 -14,-22 C-4,-40 34,-36 34,-14 C58,-18 66,14 44,14 Z", fill: css("--cloud"), stroke: "#d1d5db", "stroke-width": 1.5 }, g);
     const box = el("g", {}, g);
-    el("rect", { x: -w / 2, y: -h / 2, width: w, height: h, rx: 2, fill: css("--brick"), stroke: "#5c2a1a" }, box);
+    el("rect", { x: -w / 2, y: -h / 2, width: w, height: h, rx: 2, fill: css("--brick"), stroke: "#7c2d12" }, box);
     for (let r = 1; r < (tier === "edge" ? 3 : 4); r++) el("line", { x1: -w / 2, x2: w / 2, y1: -h / 2 + r * h / (tier === "edge" ? 3 : 4), y2: -h / 2 + r * h / (tier === "edge" ? 3 : 4), stroke: css("--brick-2"), "stroke-width": 1 }, box);
     const rows = tier === "edge" ? 3 : 4;
     for (let r = 0; r < rows; r++) for (let c = (r % 2 ? 0.5 : 1); c < (tier === "edge" ? 3 : 4); c++) {
@@ -456,11 +455,11 @@ function drawStatic() {
     const slots = [];
     for (let k = 0; k < nmax; k++) {
       const r = Math.floor(k / perRow), c = k % perRow; const rowW = perRow * (sz + gap) - gap;
-      slots.push(el("rect", { x: -rowW / 2 + c * (sz + gap), y: h / 2 + 6 + r * (sz + gap), width: sz, height: sz, rx: 1, fill: "#2a3a48" }, g));
+      slots.push(el("rect", { x: -rowW / 2 + c * (sz + gap), y: h / 2 + 6 + r * (sz + gap), width: sz, height: sz, rx: 1, fill: "#d1d5db" }, g));
     }
     const ly = h / 2 + 8 + Math.ceil(nmax / perRow) * (sz + gap) + 10;
-    el("text", { x: 0, y: ly, "text-anchor": "middle", "font-size": 12.5, "font-weight": 700, fill: "#8c99a6" }, g).textContent = name;
-    const sub = el("text", { x: 0, y: ly + 13, "text-anchor": "middle", "font-family": css("--font-num"), "font-size": 10.5, fill: "#5c6b78" }, g);
+    el("text", { x: 0, y: ly, "text-anchor": "middle", "font-size": 12.5, "font-weight": 700, fill: "#4b5563" }, g).textContent = name;
+    const sub = el("text", { x: 0, y: ly + 13, "text-anchor": "middle", "font-family": css("--font-num"), "font-size": 10.5, fill: "#6b7280" }, g);
     const drop = el("text", { x: w / 2 + 6, y: -h / 2 - 4, "font-family": css("--font-num"), "font-size": 10.5, fill: css("--bad"), "font-weight": 600 }, g);
     g.addEventListener("click", () => select({ kind: "site", s }));
     g.addEventListener("keydown", (e) => { if (e.key === "Enter") select({ kind: "site", s }); });
@@ -515,10 +514,10 @@ function update() {
   T.links.forEach((name, l) => {
     const down = linkDown(t, l); const u = tl.link_util[t][l];
     const col = down ? css("--bad") : u > 0.8 ? css("--warn") : css("--ok");
-    linkEls[l].setAttribute("stroke", down ? css("--bad") : "#2a3a48");
+    linkEls[l].setAttribute("stroke", down ? css("--bad") : "#d1d5db");
     dotEls[l].forEach((d) => d.setAttribute("fill", col));
     utilEls[l].tx.textContent = down ? "down" : Math.round(100 * u) + "%";
-    utilEls[l].tx.setAttribute("fill", down ? css("--bad") : "#8c99a6");
+    utilEls[l].tx.setAttribute("fill", down ? css("--bad") : "#4b5563");
   });
   // routers
   T.ingress.forEach((name, i) => {
@@ -534,7 +533,7 @@ function update() {
   // sites
   T.sites.forEach((name, s) => {
     const S = devEls.sites[s]; const n = tl.n[t][s]; const down = siteDown(t, s);
-    S.slots.forEach((r, k) => r.setAttribute("fill", k < n ? css("--ok") : "#2a3a48"));
+    S.slots.forEach((r, k) => r.setAttribute("fill", k < n ? css("--ok") : "#d1d5db"));
     const offered = tl.flows_is[t].reduce((a, row) => a + row[s], 0);
     const served = tl.site_load[t][s]; const dropped = Math.max(0, offered - served);
     S.sub.textContent = `${n}/${T.n_max[s]} vFW · ${f1(served)}G`;
@@ -674,8 +673,8 @@ function spawnAndMove(dt) {
     }
     const [px, py] = along(pk.p, pk.u);
     const e = el("g", { transform: `translate(${px},${py})` }, g);
-    el("rect", { x: -6, y: -4, width: 12, height: 8, rx: 1, fill: pk.col, stroke: "#0f1419", "stroke-width": .8 }, e);
-    el("path", { d: "M-6,-4 L0,1 L6,-4", fill: "none", stroke: "#0f1419", "stroke-width": .8 }, e);
+    el("rect", { x: -6, y: -4, width: 12, height: 8, rx: 1, fill: pk.col, stroke: "#ffffff", "stroke-width": .8 }, e);
+    el("path", { d: "M-6,-4 L0,1 L6,-4", fill: "none", stroke: "#ffffff", "stroke-width": .8 }, e);
   }
 }
 let last = performance.now();

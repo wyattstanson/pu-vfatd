@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PU-vFATD -- Algorithm and Results</title>
+<style>
+  :root {
+    --bg: #0d1b2a;
+    --surface: #152535;
+    --surface-2: #1c2f42;
+    --border: #2a3f55;
+    --text: #d0d8e0;
+    --text-2: #8899aa;
+    --text-3: #5c7080;
+    --accent: #049fd9;
+    --accent-dim: rgba(4, 159, 217, 0.10);
+    --green: #4caf50;
+    --yellow: #e6a817;
+    --red: #d44a3a;
+    --toolbar: #0f2236;
+    --toolbar-border: #1a3350;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .toolbar {
+    background: var(--toolbar);
+    border-bottom: 1px solid var(--toolbar-border);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 9pt;
+    color: var(--text-2);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .toolbar .app-title {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 9pt;
+    letter-spacing: 0.02em;
+  }
+  .toolbar .sep {
+    color: var(--border);
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 32px 48px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 14pt;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .header .subtitle {
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--text-2);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .header .authors {
+    font-size: 9pt;
+    color: var(--text-2);
+  }
+  .header .course {
+    font-size: 9pt;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  h2 {
+    font-size: 11pt;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 6px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3px;
+  }
+  h3 {
+    font-size: 10pt;
+    font-weight: 600;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  p {
+    text-align: left;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .eq-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    margin: 8px 0 10px;
+    overflow-x: auto;
+  }
+  .eq-block .eq-label {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 8pt;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .eq-block math {
+    font-size: 11pt;
+    color: var(--text);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 8px 0 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+  thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 8pt;
+    color: var(--text-2);
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--accent);
+    background: var(--surface);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  tbody td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9pt;
+  }
+  tbody td:first-child {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--surface); }
+  .best {
+    color: var(--green);
+    font-weight: 600;
+  }
+  .highlight-row td {
+    background: var(--accent-dim);
+  }
+
+  ol, ul {
+    text-align: left;
+    padding-left: 20px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  li { margin-bottom: 2px; }
+
+  .tree {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 8.5pt;
+    line-height: 1.5;
+    white-space: pre;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    overflow-x: auto;
+    margin: 8px 0 10px;
+  }
+  .tree .dir { color: var(--accent); font-weight: 600; }
+  .tree .cmt { color: var(--text-3); }
+
+  .scope-list { list-style: none; padding-left: 0; }
+  .scope-list li {
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    text-align: left;
+    font-size: 9pt;
+  }
+  .scope-list li:last-child { border-bottom: none; }
+  .badge {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    flex-shrink: 0;
+  }
+  .badge-done { background: var(--surface); color: var(--green); border: 1px solid var(--border); }
+  .badge-not { background: var(--surface); color: var(--red); border: 1px solid var(--border); }
+  .badge-partial { background: var(--surface); color: var(--yellow); border: 1px solid var(--border); }
+
+  .footer {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 8pt;
+    color: var(--text-3);
+  }
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .footer a:hover { text-decoration: underline; }
+
+  strong { color: var(--text); }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .toolbar { display: none; }
+    .page { padding: 0; max-width: 100%; }
+    :root { --accent: #006080; --border: #ccc; --surface: #f5f5f5; --text: #000; --text-2: #333; --text-3: #666; --green: #007733; --red: #cc0000; --yellow: #996600; }
+    h2 { color: #006080; border-color: #006080; }
+    .eq-block { background: #f5f5f5; }
+    .eq-block .eq-label { color: #006080; }
+    .eq-block math { color: #000; }
+    thead th { color: #006080; border-color: #006080; background: #f5f5f5; }
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 16px 12px 32px; }
+    .header h1 { font-size: 12pt; }
+    .toolbar { font-size: 8pt; padding: 4px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <span class="app-title">Cisco Packet Tracer</span>
+  <span class="sep">|</span>
+  <span>PU-vFATD Review Document</span>
+  <span class="sep">|</span>
+  <span>Group 21</span>
+</div>
+<div class="page">
+
+  <div class="header">
+    <h1>Algorithm and Results</h1>
+    <div class="subtitle">Proactive and Uncertainty-Aware Virtual Firewall Scaling and Placement in the Telco Cloud-Edge Continuum (PU-vFATD)</div>
+    <div class="authors">Group 21: Aryansh Sinha (24BCE2312), Sreevatsa Pulipati (24BCE2315), Shourya Saraf (24BDS0391)</div>
+    <div class="course">Computer Networks Case Study, 2026</div>
+  </div>
+
+  <!-- 1. Overview -->
+  <h2>1. Problem</h2>
+  <p>
+    Telecom operators run virtual firewalls (vFWs) in cloud-edge networks to inspect customer traffic. Every orchestration interval (5 minutes), the operator must decide three things: how many firewall instances to run at each site, where to place them, and how to split traffic among sites.
+  </p>
+  <p>
+    The base paper (vFATD, Kopec-Persinski and Beben 2026) solves this as a mixed-integer linear program (MILP). It has three weaknesses that matter in practice:
+  </p>
+  <ol>
+    <li>It plans on already-observed traffic. A flash crowd that starts between decisions hits firewalls sized for old load.</li>
+    <li>It assumes every instance inspects exactly 50 Gbps. In practice this drops when IPS, DPI or IPsec are active, and depends on traffic mix.</li>
+    <li>It ignores link capacities and latency budgets, so it can route traffic over full links or to distant sites.</li>
+  </ol>
+  <p>Our system, PU-vFATD (Proactive and Uncertainty-aware), fixes these three problems with a seven-stage orchestration pipeline.</p>
+
+  <!-- 2. Stages -->
+  <h2>2. Seven-Stage Pipeline</h2>
+
+  <h3>2.1 Stage 1: Capacity Estimation (Eqs. 1-3)</h3>
+  <p>
+    Instead of assuming 50 Gbps, we estimate the actual inspection capacity per instance at each site. A model-based prior (Eq. 1) uses the traffic mix and known per-class inspection cost. A measurement-based estimate scales observed throughput to the maximum allowed CPU utilisation. These are blended with exponential smoothing (Eq. 3) so noisy readings do not jerk the estimate around. If telemetry is stale or missing, we use the lower of the old estimate and the prior.
+  </p>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 1 -- Capacity prior</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mover accent="true"><mrow><mi>C</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>C</mi><mrow><mn>0</mn></mrow></msub></mrow><mrow><msub><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x02208;</mo><mi>K</mi></mrow></msub><msubsup><mi>p</mi><mrow><mi>s</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mspace width="0.167em" /><msub><mi>&#x003BA;</mi><mrow><mi>k</mi></mrow></msub></mrow></mfrac></mrow></math>
+  </div>
+  <p>
+    Ablation impact: replacing this with fixed 50 Gbps drops served traffic from 99.84% to 96.47%. This is the single biggest factor in the system.
+  </p>
+
+  <h3>2.2 Stage 2: Forecasting (Eq. 4)</h3>
+  <p>
+    Instead of planning on the traffic just observed, we forecast the next interval. The forecaster is a seasonal-ratio model: it multiplies the last observation by the ratio between yesterday-at-this-time and yesterday-one-interval-earlier, with a 3-interval moving window. It outputs both a mean and a standard deviation (the spread of its past errors).
+  </p>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 4 -- Forecast mean and spread</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msubsup><mi>&#x003BC;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><msubsup><mi>&#x003C3;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo>&#x0003D;</mo><msub><mi>f</mi><mrow><mi>&#x1D430;</mi></mrow></msub><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msubsup><mi>&#x1D417;</mi><mrow><mi>i</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo>&#x0002C;</mo><mspace width="1em" /><mo>&#x02200;</mo><mi>k</mi><mo>&#x02208;</mo><mi>K</mi></mrow></math>
+  </div>
+  <p>
+    We use a statistical forecaster (3.5% MAPE), not the neural model described in the methodology document (Eq. 5). The reserve mechanism in Stage 3 covers the remaining error.
+  </p>
+
+  <h3>2.3 Stage 3: Uncertainty-Aware Reserve (Eqs. 6-8)</h3>
+  <p>
+    A fixed safety margin does not work well: it wastes capacity when traffic is steady and is too small during a surge. Instead, we set the reserve from the forecast's own uncertainty. The planning demand (Eq. 8) is the core of the proactive approach.
+  </p>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 6 -- Normalised forecast error</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>e</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo>&#x0003D;</mo><mfrac><mrow><msubsup><mi>d</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo>&#x02212;</mo><msubsup><mi>&#x003BC;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup></mrow><mrow><msubsup><mi>&#x003C3;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup></mrow></mfrac></mrow></math>
+  </div>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 8 -- Planning demand</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mover accent="true"><mrow><mi>D</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0003D;</mo><mo>max</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msubsup><mi>&#x003BC;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002B;</mo><mo>max</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msubsup><mi>q</mi><mrow><mi>i</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002C;</mo><mn>0</mn><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><msubsup><mi>&#x003C3;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><msubsup><mi>d</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow></math>
+  </div>
+  <p>
+    The multiplier q increases after an under-forecast and decreases slowly otherwise, tracking a 5% miss rate target. The outer max ensures we never plan for less than the last measurement, so capacity is not released during an ongoing surge. Reserve coverage (PICP) is 94.6%, close to the 95% target.
+  </p>
+
+  <h3>2.4 Stage 4: Optimisation Model (Eqs. 9-22)</h3>
+  <p>
+    Given the planning demand, we minimise a cost function (Eq. 9) with six terms: deployment, transport, loss penalty, latency, reconfiguration, and migration costs. The decision variables are the number of instances at each site and the traffic split fractions.
+  </p>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 9 -- Total cost (objective)</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><munder><mrow><mo>min</mo></mrow><mrow><msup><mi>&#x1D427;</mi><mrow><mi>t</mi></mrow></msup><mo>&#x0002C;</mo><msup><mi>&#x1D431;</mi><mrow><mi>t</mi></mrow></msup></mrow></munder><mtext>&#x000A0;</mtext><msup><mi>J</mi><mrow><mi>t</mi></mrow></msup><mo>&#x0003D;</mo><msubsup><mi>J</mi><mrow><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">p</mi></mrow></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002B;</mo><msubsup><mi>J</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002B;</mo><msubsup><mi>J</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002B;</mo><msubsup><mi>J</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002B;</mo><msubsup><mi>J</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow><mrow><mi>t</mi></mrow></msubsup></mrow></math>
+  </div>
+  <p>
+    The constraints (Eqs. 17-22) enforce hard limits. Eqs. 19 and 20 are new contributions not present in the base paper:
+  </p>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 17 -- CPU and memory limit</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>n</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x02208;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x0007B;</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo>&#x0002C;</mo><mo>&#x02026;</mo><mo>&#x0002C;</mo><msubsup><mi>N</mi><mrow><mi>s</mi></mrow><mrow><mo>max</mo><mo>&#x0002C;</mo><mi>t</mi></mrow></msubsup><mo stretchy="true" fence="true" form="postfix">&#x0007D;</mo></mrow><mo>&#x0002C;</mo><mspace width="1em" /><msubsup><mi>N</mi><mrow><mi>s</mi></mrow><mrow><mo>max</mo><mo>&#x0002C;</mo><mi>t</mi></mrow></msubsup><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x0230A;</mo><mo>min</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mfrac><mrow><msubsup><mi>F</mi><mrow><mi>s</mi></mrow><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi></mrow><mo>&#x0002C;</mo><mi>t</mi></mrow></msubsup></mrow><mrow><msup><mi>&#x003B6;</mi><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi></mrow></mrow></msup></mrow></mfrac><mo>&#x0002C;</mo><mfrac><mrow><msubsup><mi>F</mi><mrow><mi>s</mi></mrow><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi></mrow><mo>&#x0002C;</mo><mi>t</mi></mrow></msubsup></mrow><mrow><msup><mi>&#x003B6;</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi></mrow></mrow></msup></mrow></mfrac><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo stretchy="true" fence="true" form="postfix">&#x0230B;</mo></mrow></mrow></math>
+  </div>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 19 -- Link capacity (new)</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>b</mi><mrow><mi>l</mi></mrow><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo>&#x0002B;</mo><munder><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x02208;</mo><mi>I</mi></mrow></munder><munder><mo>&#x02211;</mo><mrow><mi>s</mi><mo>&#x02208;</mo><mi>S</mi></mrow></munder><msubsup><mi>&#x003C7;</mi><mrow><mi>l</mi></mrow><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>s</mi></mrow></msubsup><munder><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x02208;</mo><mi>K</mi></mrow></munder><msubsup><mover accent="true"><mrow><mi>D</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mspace width="0.167em" /><msubsup><mi>x</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi><mo>&#x0002C;</mo><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x02264;</mo><msup><mi>&#x003C1;</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow></mrow></msup><msub><mi>B</mi><mrow><mi>l</mi></mrow></msub><mo>&#x0002C;</mo><mspace width="1em" /><mo>&#x02200;</mo><mi>l</mi><mo>&#x02208;</mo><mi>L</mi></mrow></math>
+  </div>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 20 -- Latency budget (new)</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>x</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi><mo>&#x0002C;</mo><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0003D;</mo><mn>0</mn><mo>&#x0002C;</mo><mspace width="1em" /><mo>&#x02200;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi><mo>&#x0002C;</mo><mi>s</mi><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mi>:</mi><mtext>&#x000A0;</mtext><msubsup><mi>&#x02113;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002B;</mo><msubsup><mi>h</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0003E;</mo><msubsup><mi>T</mi><mrow><mi>k</mi></mrow><mrow><mo>max</mo></mrow></msubsup></mrow></math>
+  </div>
+  <p>With linearisation, minimising Eq. 9 subject to Eqs. 17-22 is a MILP solved by HiGHS via SciPy.</p>
+
+  <h3>2.5 Stage 5: Controller (Eqs. 23-36)</h3>
+  <p>
+    The methodology document describes a PPO (Proximal Policy Optimisation) controller trained as a constrained Markov decision process. We did not implement this. The controller slot is filled by: PU-vFATD uses the MILP solver from Stage 4 (mean solve time ~109 ms); PU-vFATD-fast uses a greedy proposer (~1.2 ms). Both are checked by the SafetyGate. The proposer interface is modular -- a trained PPO policy would be a drop-in replacement.
+  </p>
+
+  <h3>2.6 Stage 6: SafetyGate (Algorithm 1, Eqs. 37-39)</h3>
+  <p>
+    Every proposed configuration is checked before it reaches the network. The fallback hierarchy: (1) accept if already feasible, (2) greedy repair of overloaded sites and links, (3) projection to the closest feasible configuration, (4) revalidate the running configuration against current demand, (5) solve the full MILP under a time limit, (6) emergency mode: maximum instances, protected classes first, alarm raised.
+  </p>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 37 -- Feasibility test</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>&#x1D41A;</mi><mrow><mi>t</mi></mrow></msup><mo>&#x02208;</mo><msup><mi>&#x1D49C;</mi><mrow><mi>t</mi></mrow></msup><mi>&#x027FA;</mi><msub><mi>&#x003A9;</mi><mrow><mi>j</mi></mrow></msub><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msup><mi>&#x1D41A;</mi><mrow><mi>t</mi></mrow></msup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo>&#x0003D;</mo><mn>0</mn><mo>&#x0002C;</mo><mspace width="1em" /><mo>&#x02200;</mo><mi>j</mi><mo>&#x02208;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x0007B;</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi></mrow><mo>&#x0002C;</mo><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">k</mi></mrow><mo>&#x0002C;</mo><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow><mo>&#x0002C;</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi></mrow><mo stretchy="true" fence="true" form="postfix">&#x0007D;</mo></mrow></mrow></math>
+  </div>
+  <p>
+    Traffic is never forwarded without inspection. If there is not enough capacity, traffic is blocked. This is a structural invariant enforced in the simulator and verified by unit tests.
+  </p>
+
+  <h3>2.7 Stage 7: Execution (Eq. 39)</h3>
+  <p>
+    Make-before-break deployment: start new instances first, wait for readiness, install new routing rules, then drain old instances. Sending a command is not taken as success -- the controller records what the execution unit actually confirms.
+  </p>
+
+  <!-- 3. Metrics -->
+  <h2>3. Evaluation Metrics</h2>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 40 -- Served-traffic ratio (STR)</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">T</mi><mi mathvariant="normal">R</mi></mrow><mo>&#x0003D;</mo><mfrac><mrow><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>T</mi></mrow></msubsup><msub><mo>&#x02211;</mo><mrow><mi>s</mi><mo>&#x02208;</mo><mi>S</mi></mrow></msub><mo>min</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msubsup><mi>Y</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><msubsup><mi>C</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><msubsup><mi>n</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow><mrow><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>T</mi></mrow></msubsup><msub><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x02208;</mo><mi>I</mi></mrow></msub><msub><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x02208;</mo><mi>K</mi></mrow></msub><msubsup><mi>d</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup></mrow></mfrac></mrow></math>
+  </div>
+  <div class="eq-block">
+    <div class="eq-label">Eq. 41 -- Over-provisioning factor (OPF)</div>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">O</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">F</mi></mrow><mo>&#x0003D;</mo><mfrac><mrow><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>T</mi></mrow></msubsup><msub><mo>&#x02211;</mo><mrow><mi>s</mi><mo>&#x02208;</mo><mi>S</mi></mrow></msub><msubsup><mi>C</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup><msubsup><mi>n</mi><mrow><mi>s</mi></mrow><mrow><mi>t</mi></mrow></msubsup></mrow><mrow><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>T</mi></mrow></msubsup><msub><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x02208;</mo><mi>I</mi></mrow></msub><msub><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x02208;</mo><mi>K</mi></mrow></msub><msubsup><mi>d</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>k</mi></mrow><mrow><mi>t</mi></mrow></msubsup></mrow></mfrac></mrow></math>
+  </div>
+
+  <!-- 4. Results -->
+  <h2>4. Results (Realistic Constraints)</h2>
+  <p>Each experiment runs 288 intervals (one simulated day) on a 4-PoP, 7-site network (4 edge sites with 3 slots, 2 regional with 8, 1 cloud with 24) with six stress scenarios. Three seeds per combination; means reported.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Controller</th><th>STR</th><th>Cost</th><th>Lost (Gbps&middot;h)</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row"><td><strong>PU-vFATD</strong></td><td class="best">99.84%</td><td class="best">6,309</td><td>10.5</td></tr>
+        <tr class="highlight-row"><td><strong>PU-vFATD-fast</strong></td><td>99.86%</td><td>8,428</td><td class="best">9.1</td></tr>
+        <tr><td>Local reactive</td><td>97.90%</td><td>8,384</td><td>132.1</td></tr>
+        <tr><td>Static (busy hour)</td><td>97.06%</td><td>9,456</td><td>184.9</td></tr>
+        <tr><td>vFATD-MILP (adapted)</td><td>94.64%</td><td>9,663</td><td>323.8</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    PU-vFATD achieves 99.84% served-traffic ratio at the lowest cost. The adapted vFATD-MILP scores 94.64% because it still uses fixed 50 Gbps capacity and reactive planning. Under the base paper's original assumptions (no link limits, unlimited capacity), all methods are close -- the vFATD MILP is about 3% cheaper. Our method is better specifically because the realistic constraints matter.
+  </p>
+
+  <!-- 5. Ablation -->
+  <h2>5. Ablation</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Component Removed</th><th>STR</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Capacity estimation (use fixed 50G)</td><td>96.47%</td><td>Biggest factor. Wrong capacity leads to wrong decisions.</td></tr>
+        <tr><td>SafetyGate</td><td>99.84%</td><td>STR unchanged, but loss rises from 15.4 to 22.3 Gbps&middot;h.</td></tr>
+        <tr><td>Forecasting</td><td>99.73%</td><td>STR barely changes, but PICP drops to 48.9% -- reserve is blind.</td></tr>
+        <tr><td>Fixed reserve (+15%)</td><td>99.72%</td><td>OPF rises from 1.34 to 1.43 -- wastes capacity.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. Contributions -->
+  <h2>6. Contributions vs. Base Paper</h2>
+  <ol>
+    <li><strong>Proactive planning</strong> (Eqs. 4, 7, 8): forecast + adaptive reserve instead of reactive.</li>
+    <li><strong>Variable capacity estimation</strong> (Eqs. 1-3): measured per-site capacity instead of fixed 50 Gbps.</li>
+    <li><strong>Extended constraints</strong> (Eqs. 19-20): link capacity and latency budgets.</li>
+    <li><strong>SafetyGate</strong> (Algorithm 1, Eqs. 37-39): multi-level fallback guaranteeing feasibility.</li>
+  </ol>
+
+  <!-- 7. Scope -->
+  <h2>7. Scope</h2>
+  <ul class="scope-list">
+    <li><span class="badge badge-done">BUILT</span> 7-stage orchestration pipeline with 14 Python modules</li>
+    <li><span class="badge badge-done">BUILT</span> 45 equations implemented and mapped to code (Eqs. 1-22, 37-45)</li>
+    <li><span class="badge badge-done">BUILT</span> MILP solver (HiGHS via SciPy), greedy proposer, SafetyGate</li>
+    <li><span class="badge badge-done">BUILT</span> Simulation with synthetic traffic, 6 stress scenarios, 5 controllers</li>
+    <li><span class="badge badge-done">BUILT</span> 23 unit tests including sabotage tests</li>
+    <li><span class="badge badge-done">BUILT</span> Interactive dashboard with topology, results, equation browser</li>
+    <li><span class="badge badge-not">NOT BUILT</span> PPO controller (Eqs. 23-36 designed, interface built, training not done)</li>
+    <li><span class="badge badge-not">NOT BUILT</span> Neural forecaster (statistical model used; 3.5% MAPE is sufficient)</li>
+    <li><span class="badge badge-not">NOT BUILT</span> Kubernetes/SDN prototype (timing values are simulation parameters)</li>
+    <li><span class="badge badge-partial">SYNTHETIC</span> Traffic data (real operator trace not publicly available)</li>
+  </ul>
+
+  <!-- 8. Code structure -->
+  <h2>8. Code Structure</h2>
+  <div class="tree"><span class="dir">puvfatd/</span>
+  config.py        <span class="cmt">-- all parameters (Table 2) as a frozen dataclass</span>
+  topology.py      <span class="cmt">-- 4 ingress, 4 edge, 2 regional, 1 cloud, 9 links</span>
+  traffic.py       <span class="cmt">-- synthetic daily profile + stress event injectors</span>
+  capacity.py      <span class="cmt">-- Eqs. 1-3: prior, measurement, smoothed estimate</span>
+  forecasting.py   <span class="cmt">-- seasonal-ratio forecaster (mean + sigma)</span>
+  reserve.py       <span class="cmt">-- Eqs. 6-8: normalised error, q update, planning demand</span>
+  model.py         <span class="cmt">-- Eqs. 9-22: cost function and constraint checking</span>
+  milp.py          <span class="cmt">-- HiGHS solver: vFATD MILP, projection, emergency</span>
+  heuristics.py    <span class="cmt">-- k-centre and GA (base paper baselines)</span>
+  safety.py        <span class="cmt">-- Algorithm 1: the SafetyGate</span>
+  controllers.py   <span class="cmt">-- all controllers (static, reactive, MILP, PU, fast)</span>
+  simulator.py     <span class="cmt">-- interval-level execution with two-phase apply</span>
+  runner.py        <span class="cmt">-- closed-loop executor: controller -> gate -> simulator</span>
+  metrics.py       <span class="cmt">-- Eqs. 40-45: STR, OPF, latency, RCF, PICP</span>
+
+<span class="dir">experiments/</span>
+  run_all.py       <span class="cmt">-- 3 comparisons x 7 scenarios x 3 seeds in parallel</span>
+  report.py        <span class="cmt">-- generates tables, figures, and dashboard data</span>
+
+<span class="dir">tests/</span>            <span class="cmt">-- 23 unit tests (costs, constraints, reserve, safety,</span>
+                   <span class="cmt">   simulator conservation, forecast causality)</span></div>
+
+  <div class="footer">
+    <p>
+      Base paper: Kopec-Persinski, M. and Beben, A. (2026). vFATD: Virtual Firewall Auto-scaling, Traffic Distribution in a Cloud-Edge Network.<br>
+      Interactive dashboard: <a href="https://wyattstanson.github.io/pu-vfatd/">wyattstanson.github.io/pu-vfatd</a>
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
